@@ -268,7 +268,8 @@ function loop(ts) {
     }
   }
   draw();
-  animId = requestAnimationFrame(loop);
+  // endGame() cancela el rAF dentro de este frame; no lo reprogramamos
+  if (!gameOver) animId = requestAnimationFrame(loop);
 }
 
 function init() {
