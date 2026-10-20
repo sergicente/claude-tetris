@@ -4,16 +4,30 @@ const COLS = 10;
 const ROWS = 20;
 const BLOCK = 30;
 
-const COLORS = [
-  null,
-  '#4dd0e1', // I - cyan
-  '#ffd54f', // O - yellow
-  '#ba68c8', // T - purple
-  '#81c784', // S - green
-  '#e57373', // Z - red
-  '#90caf9', // J - pale blue
-  '#ffb74d', // L - orange
-];
+const THEME_COLORS = {
+  dark: [
+    null,
+    '#4dd0e1', // I - cyan
+    '#ffd54f', // O - yellow
+    '#ba68c8', // T - purple
+    '#81c784', // S - green
+    '#e57373', // Z - red
+    '#90caf9', // J - pale blue
+    '#ffb74d', // L - orange
+  ],
+  light: [
+    null,
+    '#00acc1', // I - cyan
+    '#f9a825', // O - yellow
+    '#8e24aa', // T - purple
+    '#388e3c', // S - green
+    '#d32f2f', // Z - red
+    '#1976d2', // J - blue
+    '#ef6c00', // L - orange
+  ],
+};
+let COLORS = THEME_COLORS.dark;
+let gridColor;
 
 const PIECES = [
   null,
@@ -39,6 +53,7 @@ const overlay = document.getElementById('overlay');
 const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
+const themeBtn = document.getElementById('theme-toggle');
 
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 
@@ -169,7 +184,7 @@ function drawBlock(context, x, y, colorIndex, size, alpha) {
 }
 
 function drawGrid() {
-  ctx.strokeStyle = '#22222e';
+  ctx.strokeStyle = gridColor;
   ctx.lineWidth = 0.5;
   for (let c = 1; c < COLS; c++) {
     ctx.beginPath();
@@ -299,6 +314,22 @@ document.addEventListener('keydown', e => {
   updateHUD();
 });
 
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  COLORS = THEME_COLORS[theme];
+  gridColor = getComputedStyle(document.documentElement).getPropertyValue('--grid').trim();
+  themeBtn.textContent = theme === 'dark' ? 'Tema claro' : 'Tema oscuro';
+  // El bucle está detenido en pausa/game over: repinta a mano si hay partida
+  if (current) { draw(); drawNext(); }
+}
+
+themeBtn.addEventListener('click', () => {
+  applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+  themeBtn.blur(); // evita que Espacio vuelva a activar el botón en partida
+});
+
 restartBtn.addEventListener('click', init);
+
+applyTheme(window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
 
 init();
