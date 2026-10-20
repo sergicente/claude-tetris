@@ -19,6 +19,20 @@ body {
   position: relative;
 }
 
+.title {
+  text-align: center;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 12px;
+  text-indent: 12px; /* compensa el letter-spacing final para centrar */
+  margin-bottom: 16px;
+  background: linear-gradient(90deg, #4dd0e1, #ba68c8, #e57373, #ffb74d, #ffd54f, #81c784);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
 .game-container {
   display: flex;
   gap: 20px;
